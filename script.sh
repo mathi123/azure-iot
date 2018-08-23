@@ -21,5 +21,6 @@ git clone https://github.com/mathi123/azure-iot.git
 cd azure-iot
 
 echo "HOST_FQN=$1" >> .env
+echo "REDIS_URL=$2" >> .env
 
 docker-compose up -d

@@ -48,7 +48,6 @@ services:
     depends_on:
       - postgresql
       - solr
-      - redis
     ports:
       - 8096:5000
     environment:

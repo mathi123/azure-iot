@@ -20,6 +20,6 @@ git clone https://github.com/mathi123/azure-iot.git
 
 cd azure-iot
 
-cat "HOST_FQN=$0" >> .env
+cat "HOST_FQN=$1" >> .env
 
 docker-compose up -d

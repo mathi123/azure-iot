@@ -1,0 +1,70 @@
+version: '3'
+volumes:
+  ckan_config:
+  ckan_home:
+  ckan_storage:
+  pg_data:
+services:
+  nifi:
+    image: apache/nifi:latest
+    ports:
+     - 8090:8080
+  mongo:
+    image: mongo:3.4
+    command: --nojournal
+  postgresql:
+    image: ckan/postgresql
+    environment:
+      - POSTGRES_USER=ckan
+      - POSTGRES_PASSWORD=ckan
+      - POSTGRES_DB=ckan
+      - DS_RO_PASS=ds_ckan
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  orion:
+    image: fiware/orion
+    links:
+      - mongo
+    ports:
+      - 8091:1026
+    command: -dbhost mongo
+  comet:
+    image: fiware/sth-comet
+    links:
+      - mongo
+    ports:
+      - 8092:8666
+    environment:
+      - STH_HOST=0.0.0.0
+      - DB_URI=mongo
+  solr:
+    image: ckan/solr
+  redis:
+    image: redis:latest
+  datapusher:
+    image: clementmouchet/datapusher
+    ports:
+      - 8800:8800
+  ckan:
+    image: ckan/ckan
+    depends_on:
+      - postgresql
+      - solr
+      - redis
+    ports:
+      - 8096:5000
+    environment:
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@postgresql/ckan
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@postgresql/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:ds_ckan@postgresql/datastore
+      - CKAN_SOLR_URL=http://solr:8983/solr/ckan
+      - CKAN_REDIS_URL=redis://redis:6379/1
+      - CKAN_DATAPUSHER_URL=http://datapusher:8800
+      - CKAN_SITE_URL=${HOST_FQN}
+      - CKAN_MAX_UPLOAD_SIZE_MB=100
+      - POSTGRES_PASSWORD=ckan
+      - DS_RO_PASS=ds_ckan
+    volumes:
+      - ckan_config:/etc/ckan
+      - ckan_home:/usr/lib/ckan
+      - ckan_storage:/var/lib/ckan

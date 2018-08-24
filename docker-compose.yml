@@ -57,7 +57,7 @@ services:
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
       - CKAN_REDIS_URL=redis://${REDIS_URL}:6379/1
       - CKAN_DATAPUSHER_URL=http://datapusher:8800
-      - CKAN_SITE_URL=${HOST_FQN}
+      - CKAN_SITE_URL=http://${HOST_FQN}
       - CKAN_MAX_UPLOAD_SIZE_MB=100
       - POSTGRES_PASSWORD=ckan
       - DS_RO_PASS=ds_ckan

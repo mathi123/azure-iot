@@ -9,6 +9,9 @@ services:
     image: apache/nifi:latest
     ports:
      - 8090:8080
+     - 8097:8097
+     - 8098:8098
+     - 8099:8099
   mongo:
     image: mongo:3.4
     command: --nojournal

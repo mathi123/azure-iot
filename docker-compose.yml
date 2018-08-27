@@ -21,7 +21,7 @@ services:
       - POSTGRES_USER=ckan
       - POSTGRES_PASSWORD=ckan
       - POSTGRES_DB=ckan
-      - DS_RO_PASS=ds_ckan
+      - DS_RO_PASS=datastore
     volumes:
       - pg_data:/var/lib/postgresql/data
   orion:
@@ -60,14 +60,14 @@ services:
     environment:
       - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@postgresql/ckan
       - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@postgresql/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:ds_ckan@postgresql/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@postgresql/datastore
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
       - CKAN_REDIS_URL=redis://redis:6379/1
       - CKAN_DATAPUSHER_URL=http://datapusher:8800
       - CKAN_SITE_URL=http://${HOST_FQN}
       - CKAN_MAX_UPLOAD_SIZE_MB=100
       - POSTGRES_PASSWORD=ckan
-      - DS_RO_PASS=ds_ckan
+      - DS_RO_PASS=datastore
     volumes:
       - ckan_config:/etc/ckan
       - ckan_home:/usr/lib/ckan

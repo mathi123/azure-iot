@@ -58,7 +58,7 @@ services:
       - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@postgresql/datastore
       - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:ds_ckan@postgresql/datastore
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-      - CKAN_REDIS_URL=redis://${REDIS_URL}:6379/1
+      - CKAN_REDIS_URL=redis://redis:6379/1
       - CKAN_DATAPUSHER_URL=http://datapusher:8800
       - CKAN_SITE_URL=http://${HOST_FQN}
       - CKAN_MAX_UPLOAD_SIZE_MB=100

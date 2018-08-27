@@ -46,11 +46,15 @@ services:
     image: clementmouchet/datapusher
     ports:
       - 8800:8800
+  redis:
+    container_name: redis
+    image: redis:latest
   ckan:
     image: ckan/ckan
     depends_on:
       - postgresql
       - solr
+      - redis
     ports:
       - 8096:5000
     environment:

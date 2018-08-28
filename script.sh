@@ -20,8 +20,6 @@ git clone https://github.com/mathi123/azure-iot.git
 
 cd azure-iot
 
-echo "CKAN_SITE_URL=http://localhost:8096" >> .env
-
 echo "CKAN_PORT=8096" >> .env
 
 echo "POSTGRES_PASSWORD=ckan" >> .env

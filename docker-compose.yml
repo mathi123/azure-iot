@@ -67,7 +67,11 @@ services:
       - CKAN_MAX_UPLOAD_SIZE_MB=100
       - POSTGRES_PASSWORD=ckan
       - DS_RO_PASS=datastore
-    gather-consumer:
+    volumes:
+      - ckan_config:/etc/ckan
+      - ckan_home:/usr/lib/ckan
+      - ckan_storage:/var/lib/ckan
+  gather-consumer:
     build: ./
     command:
       - paster
@@ -79,7 +83,3 @@ services:
       - paster
       - fetch_consumer
       - --config=/etc/ckan/default/default.ini
-    volumes:
-      - ckan_config:/etc/ckan
-      - ckan_home:/usr/lib/ckan
-      - ckan_storage:/var/lib/ckan

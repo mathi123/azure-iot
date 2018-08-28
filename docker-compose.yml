@@ -18,6 +18,7 @@ services:
   postgresql:
     container_name: postgresql
     build:
+      context: .
       dockerfile: postgresql/Dockerfile
       args:
         - DS_RO_PASS=datastore

@@ -17,7 +17,6 @@ services:
     command: --nojournal
   postgresql:
     container_name: postgresql
-    image: ckan/postgresql
     build:
       dockerfile: postgresql/Dockerfile
       args:

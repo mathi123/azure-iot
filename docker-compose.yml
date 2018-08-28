@@ -16,6 +16,7 @@ services:
     image: mongo:3.4
     command: --nojournal
   postgresql:
+    container_name: postgresql
     image: ckan/postgresql:latest
     environment:
       - POSTGRES_USER=ckan
@@ -49,6 +50,7 @@ services:
   redis:
     image: redis:latest
   ckan:
+    container_name: ckan
     image: ckan/ckan
     depends_on:
       - postgresql

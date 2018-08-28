@@ -20,8 +20,24 @@ git clone https://github.com/mathi123/azure-iot.git
 
 cd azure-iot
 
+echo "CKAN_SITE_URL=http://localhost:8096" >> .env
+
+echo "CKAN_PORT=8096" >> .env
+
+echo "POSTGRES_PASSWORD=ckan" >> .env
+
+echo "POSTGRES_PORT=5432" >> .env
+
+echo "DATASTORE_READONLY_PASSWORD=datastore" >> .env
+
 echo "HOST_FQN=$1" >> .env
 
 docker-compose up -d
 
 docker exec ckan /usr/local/bin/ckan-paster --plugin=ckan datastore set-permissions -c /etc/ckan/production.ini | docker exec -i postgresql psql -U ckan
+
+sudo sed -i 's/ckan.plugins = /ckan.plugins = datastore datapusher /g' /var/lib/docker/volumes/azure-iot_ckan_config/_data/production.ini
+
+sudo sed -i 's/#ckan.datapusher.formats/ckan.datapusher.formats/g' /var/lib/docker/volumes/azure-iot_ckan_config/_data/production.ini
+
+docker-compose restart ckan

@@ -24,6 +24,6 @@ echo "HOST_FQN=$1" >> .env
 
 docker-compose up -d
 
-docker exec -it postgresql psql -U ckan -f 00_create_datastore.sh
+docker exec -it postgresql psql -U ckan -f ./00_create_datastore.sh
 
 docker exec ckan /usr/local/bin/ckan-paster --plugin=ckan datastore set-permissions -c /etc/ckan/production.ini | docker exec -i postgresql psql -U ckan

@@ -19,8 +19,7 @@ services:
     container_name: postgresql
     image: ckan/postgresql
     build:
-      context: ../../
-      dockerfile: contrib/docker/postgresql/Dockerfile
+      dockerfile: postgresql/Dockerfile
       args:
         - DS_RO_PASS=datastore
         - POSTGRES_PASSWORD=ckan

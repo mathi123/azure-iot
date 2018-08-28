@@ -16,6 +16,7 @@ services:
     image: mongo:3.4
     command: --nojournal
   postgresql:
+    container_name: postgresql
     image: ckan/postgresql
     environment:
       - POSTGRES_USER=ckan
@@ -58,9 +59,9 @@ services:
     ports:
       - 8096:5000
     environment:
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@postgresql/ckan
-      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@postgresql/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@postgresql/datastore
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@localhost/ckan
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@localhost/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@localhost/datastore
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
       - CKAN_REDIS_URL=redis://redis:6379/1
       - CKAN_DATAPUSHER_URL=http://datapusher:8800

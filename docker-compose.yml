@@ -16,13 +16,7 @@ services:
     image: mongo:3.4
     command: --nojournal
   postgresql:
-    container_name: postgresql
-    build:
-      context: .
-      dockerfile: postgresql/Dockerfile
-      args:
-        - DS_RO_PASS=datastore
-        - POSTGRES_PASSWORD=ckan
+    image: ckan/postgresql:latest
     environment:
       - POSTGRES_USER=ckan
       - POSTGRES_PASSWORD=ckan
@@ -53,7 +47,6 @@ services:
     ports:
       - 8800:8800
   redis:
-    container_name: redis
     image: redis:latest
   ckan:
     image: ckan/ckan
@@ -64,9 +57,9 @@ services:
     ports:
       - 8096:5000
     environment:
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@postgresql/ckan
-      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@postgresql/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@postgresql/datastore
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@postgresql:5432/ckan
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@postgresql:5432/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@postgresql:5432/datastore
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
       - CKAN_REDIS_URL=redis://redis:6379/1
       - CKAN_DATAPUSHER_URL=http://datapusher:8800
@@ -74,6 +67,18 @@ services:
       - CKAN_MAX_UPLOAD_SIZE_MB=100
       - POSTGRES_PASSWORD=ckan
       - DS_RO_PASS=datastore
+    gather-consumer:
+    build: ./
+    command:
+      - paster
+      - gather_consumer
+      - --config=/etc/ckan/default/default.ini
+  fetch-consumer:
+    build: ./
+    command:
+      - paster
+      - fetch_consumer
+      - --config=/etc/ckan/default/default.ini
     volumes:
       - ckan_config:/etc/ckan
       - ckan_home:/usr/lib/ckan

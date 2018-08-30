@@ -24,6 +24,8 @@ echo "CKAN_PORT=8096" >> .env
 
 echo "POSTGRES_PASSWORD=ckan" >> .env
 
+echo "SYSADMIN_PASS=tM5c=^MP" >> .env
+
 echo "POSTGRES_PORT=5432" >> .env
 
 echo "DATASTORE_READONLY_PASSWORD=datastore" >> .env
@@ -50,3 +52,5 @@ sleep 15
 chmod +x enable_datapusher.sh
 
 ./enable_datapusher.sh
+
+python Init_ckan_for_nifi.py

@@ -53,4 +53,6 @@ chmod +x enable_datapusher.sh
 
 ./enable_datapusher.sh
 
+sleep 15
+
 python Init_ckan_for_nifi.py

@@ -2,7 +2,7 @@ import subprocess
 import os
 import json
 
-cmd = "docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan user -c /etc/ckan/production.ini add sirus email=test@localhost password=${SYSADMIN_PASS}"
+cmd = "docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan user -c /etc/ckan/production.ini add sirus email=test@localhost password=tM5c=^MP"
 
 pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout
 os.environ["APIKEY"] = pipe.read().split(",")[2].split("'")[3]

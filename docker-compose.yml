@@ -7,6 +7,9 @@ volumes:
 services:
   nifi:
     image: apache/nifi:latest
+    volumes: 
+      - host: host/
+      - client: client/
     ports:
      - 8090:8080
      - 8097:8097

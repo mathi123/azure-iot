@@ -6,9 +6,8 @@ volumes:
   pg_data:
 services:
   nifi:
+    container_name: nifi
     image: apache/nifi:latest
-    volumes:
-      -nifi-conf: /conf
     ports:
      - 8090:8080
      - 8097:8097

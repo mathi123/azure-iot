@@ -1,10 +1,12 @@
 #!/bin/bash
 fqdn="$1"
 redis="$2"
+organization="$3"
 
 echo "Installing azure city platform"
 echo "  - Host: $fqdn"
 echo "  - Redis: $redis"
+echo "  - Organization: $organization"
 
 ./scripts/install-dependencies.sh
 
@@ -12,4 +14,4 @@ echo "  - Redis: $redis"
 
 ./scripts/enable-datapusher.sh
 
-python ./scripts/configure-ckan.py
+./scripts/configure-ckan.sh $organization

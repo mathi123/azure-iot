@@ -1,10 +1,14 @@
 #!/bin/bash
 
-fqdn="$1"
-apiKey=`sudo docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan user -c /etc/ckan/production.ini add sirus email=test@localhost password=tM5cMP123 | grep apikey | sed "s/'/\n/g" | sed -n '4p'`
+organization="$1"
 
-docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add sirus
+echo "configuring CKAN"
+echo "Organisation: $organization"
 
-data="{\"name\":\"sirus\"}"
+apiKey=`sudo docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan user -c /etc/ckan/production.ini add cityadmin email=test@localhost password=tM5cMP123 | grep apikey | sed "s/'/\n/g" | sed -n '4p'`
 
-curl -X POST $fqdn:8096/api/3/action/organization_create -H "Authorization: $apiKey" -d "$data"
+docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add cityadmin
+
+data="{\"name\":\"$organization\"}"
+
+curl -X POST "http://localhost:8096/api/3/action/organization_create" -H "Authorization: $apiKey" -d "$data"

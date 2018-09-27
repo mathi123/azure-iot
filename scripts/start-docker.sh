@@ -14,7 +14,7 @@ echo "DATASTORE_READONLY_PASSWORD=datastore" >> .env
 
 echo "HOST_FQN=$1" >> .env
 
-docker-compose create --build
+docker-compose up --no-start --build
 
 docker start postgresql
 docker start mongo

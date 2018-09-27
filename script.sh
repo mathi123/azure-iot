@@ -9,6 +9,8 @@ echo "  - Repo: $repoUrl"
 echo "  - Host: $fqdn"
 echo "  - Redis: $redis"
 
+rm -R -f azureiotcity
+
 git clone $repoUrl azureiotcity
 
 cd azureiotcity

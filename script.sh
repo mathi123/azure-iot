@@ -13,4 +13,4 @@ git clone $repoUrl azureiotcity
 
 cd azureiotcity
 
-./install.sh $fqdn $redis
+./scripts/install.sh $fqdn $redis

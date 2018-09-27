@@ -6,7 +6,7 @@ echo "Installing azure city platform"
 echo "  - Host: $fqdn"
 echo "  - Redis: $redis"
 
-./scripts/install-dependencies.sh
+./install-dependencies.sh
 
 ./start-docker.sh $fqdn
 

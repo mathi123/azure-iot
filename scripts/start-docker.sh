@@ -14,6 +14,16 @@ echo "DATASTORE_READONLY_PASSWORD=datastore" >> .env
 
 echo "HOST_FQN=$1" >> .env
 
-docker-compose up -d --build
+docker-compose create --build
+
+docker start postgresql
+docker start mongo
+docker start redis
+docker start solr
+docker start orion
+docker start comet
+docker start nifi
+docker start datapusher
+docker start ckan
 
 cd ..

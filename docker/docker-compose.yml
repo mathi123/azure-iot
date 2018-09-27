@@ -1,9 +1,13 @@
 version: '3'
 volumes:
   ckan_config:
+    name: ckan_config
   ckan_home:
+    name: ckan_home
   ckan_storage:
+    name: ckan_storage
   pg_data:
+    name: pg_data
 services:
   nifi:
     container_name: nifi
@@ -14,6 +18,7 @@ services:
      - 8098:8098
      - 8099:8099
   mongo:
+    container_name: mongo
     image: mongo:3.4
     command: --nojournal
   postgresql:
@@ -32,6 +37,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   orion:
+    container_name: orion
     image: fiware/orion
     links:
       - mongo
@@ -39,6 +45,7 @@ services:
       - 8091:1026
     command: -dbhost mongo
   comet:
+    container_name: comet
     image: fiware/sth-comet
     links:
       - mongo
@@ -48,12 +55,15 @@ services:
       - STH_HOST=0.0.0.0
       - DB_URI=mongo
   solr:
+    container_name: solr
     image: ckan/solr
   datapusher:
+    container_name: datapusher
     image: clementmouchet/datapusher
     ports:
       - 8800:8800
   redis:
+    container_name: redis
     image: redis:latest
   ckan:
     container_name: ckan

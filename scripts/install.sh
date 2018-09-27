@@ -6,10 +6,10 @@ echo "Installing azure city platform"
 echo "  - Host: $fqdn"
 echo "  - Redis: $redis"
 
-./install-dependencies.sh
+./scripts/install-dependencies.sh
 
-./start-docker.sh $fqdn
+./scripts/start-docker.sh $fqdn
 
-./enable-datapusher.sh
+./scripts/enable-datapusher.sh
 
-python ./configure-ckan.py
+python ./scripts/configure-ckan.py

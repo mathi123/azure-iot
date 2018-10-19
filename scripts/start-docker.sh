@@ -32,8 +32,8 @@ do
         echo "Ckan not up, restarting"
         docker-compose restart ckan
         docker ps | grep ckan/ckan
-        DONE="$(docker-compose logs -f ckan)"
-        docker-compose logs -f ckan
+        DONE="$(docker-compose logs -f --until=3s ckan)"
+        docker-compose logs -f --until=3s ckan
 done
 
 echo "Ckan Up"

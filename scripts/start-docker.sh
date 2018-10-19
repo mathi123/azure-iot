@@ -16,25 +16,25 @@ echo "HOST_FQN=$1" >> .env
 
 docker-compose up --no-start --build
 
-docker start postgresql
-docker start mongo
-docker start redis
-docker start solr
-docker start orion
-docker start comet
-docker start nifi
-docker start datapusher
-docker start ckan
+docker-compose start postgresql
+docker-compose start mongo
+docker-compose start redis
+docker-compose start solr
+docker-compose start orion
+docker-compose start comet
+docker-compose start nifi
+docker-compose start datapusher
+docker-compose start ckan
 
 echo "Running Ckan Check..."
-
+docker-compose logs -f ckan
+DONE="$(docker-compose logs -f ckan)"
 while [[ $DONE != *"DB: SUCCESS"*  ]]
 do
         echo "Ckan not up, restarting"
-        docker restart ckan
-        docker ps | grep ckan
-        sleep 3
-        DONE="$(docker logs ckan)"
+        docker-compose restart ckan
+        docker ps | grep ckan/ckan
+        DONE="$(docker-compose logs -f ckan)"
 done
 
 echo "Ckan Up"

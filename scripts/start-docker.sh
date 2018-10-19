@@ -27,13 +27,15 @@ docker-compose start datapusher
 docker-compose start ckan
 
 echo "Running Ckan Check..."
+DONE="$(docker logs ckan)"
+docker logs ckan
 while [[ $DONE != *"DB: SUCCESS"*  ]]
 do
         echo "Ckan not up, restarting"
         docker-compose restart ckan
         docker ps | grep ckan/ckan
-        DONE="$(docker-compose logs -f --until=3s ckan)"
-        docker-compose logs -f --until=3s ckan
+        DONE="$(docker logs ckan)"
+        docker logs ckan
 done
 
 echo "Ckan Up"

@@ -31,10 +31,10 @@ echo "Running Ckan Check..."
 while [[ $DONE != *"DB: SUCCESS"*  ]]
 do
         echo "Ckan not up, restarting"
-        sleep 3
-        DONE="$(docker-compose logs ckan)"
         docker-compose restart ckan
         docker ps | grep ckan
+        sleep 3
+        DONE="$(docker-compose logs ckan)"
 done
 
 echo "Ckan Up"

@@ -26,18 +26,12 @@ docker-compose start nifi
 docker-compose start datapusher
 docker-compose start ckan
 
-echo "Running Ckan Check..."
-DONE="$(docker logs ckan)"
-docker logs ckan
-while [[ $DONE != *"DB: SUCCESS"*  ]]
-do
-        echo "Ckan not up, restarting"
-        docker-compose restart ckan
-        docker ps | grep ckan/ckan
-        DONE="$(docker logs ckan)"
-        docker logs ckan
+echo "Running Postgres Check..."
+until docker exec -it postgresql psql -U 'ckan' -c '\q'; do
+        >&2 echo "Postgres is unavailable - sleeping"
+        sleep 10
 done
 
-echo "Ckan Up"
+docker-compose restart ckan
 
 cd ..

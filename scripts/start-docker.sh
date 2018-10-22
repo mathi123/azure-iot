@@ -16,6 +16,8 @@ echo "HOST_FQN=$1" >> .env
 
 docker-compose up --no-start --build
 
+START=$(date +%Y-%m-%dT%H:%M:%S)
+
 docker-compose start postgresql
 docker-compose start mongo
 docker-compose start redis
@@ -28,26 +30,26 @@ docker-compose start ckan
 
 echo -n "Running CKAN Check..."
 
-docker logs ckan >& CKANLOGS.log
-if ! grep -q '[^[:space:]]' CKANLOGS.log;
-then
-   docker logs -f  ckan >& CKANLOGS.log;
-fi
+docker logs -f --until 2m ckan >& CKANLOGS.log;
 
-until grep -Fq "SUCCESS" CKANLOGS.log; do
+while true; do
+        if grep -Fq "SUCCESS" CKANLOGS.log;
+        then
+            echo "."
+            rm CKANLOGS.log
+            cd ..
+            exit 0
+        fi
+
         echo -n "."
-        if grep -Fq "could not connect" CKANLOGS.log;
+        if grep -Fq "sqlalchemy" CKANLOGS.log;
         then
             echo "Restarting ckan container..."
-            docker restart ckan
-            docker logs --since 30s ckan >& CKANLOGS.log
+            docker-compose restart ckan
+            START=$(date +%Y-%m-%dT%H:%M:%S)
             echo -n "Running CKAN Check..."
         else
-            docker logs --since 15s ckan >& CKANLOGS.log
+            docker logs --since "$START" ckan >& CKANLOGS.log
             sleep 10
         fi
 done
-
-rm CKANLOGS.log
-
-cd ..

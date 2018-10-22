@@ -26,20 +26,28 @@ docker-compose start nifi
 docker-compose start datapusher
 docker-compose start ckan
 
-echo "Running CKAN Check..."
+echo -n "Running CKAN Check..."
 
-LOGS="$(docker-compose logs -f ckan)"
-echo "$LOGS"
-until echo "$LOGS" | grep "SUCCESS"; do
-        >&2 echo "CKAN is unavailable - sleeping"
-        if echo "$LOGS" | grep "could not connect";
+docker logs ckan >& CKANLOGS.log
+if ! grep -q '[^[:space:]]' CKANLOGS.log;
+then
+   docker logs -f  ckan >& CKANLOGS.log;
+fi
+
+until grep -Fq "SUCCESS" CKANLOGS.log; do
+        echo -n "."
+        if grep -Fq "could not connect" CKANLOGS.log;
         then
-            docker-compose restart ckan
+            echo "Restarting ckan container..."
+            docker restart ckan
+            docker logs --since 30s ckan >& CKANLOGS.log
+            echo -n "Running CKAN Check..."
+        else
+            docker logs --since 15s ckan >& CKANLOGS.log
+            sleep 10
         fi
-        LOGS="$(docker logs -f --since 10s ckan)"
-        echo "$LOGS"
 done
 
-docker-compose restart ckan
+rm CKANLOGS.log
 
 cd ..

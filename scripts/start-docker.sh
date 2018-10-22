@@ -32,7 +32,7 @@ LOGS="$(docker-compose logs -f ckan)"
 echo "$LOGS"
 until echo "$LOGS" | grep "SUCCESS"; do
         >&2 echo "CKAN is unavailable - sleeping"
-        if [echo "$LOGS" | grep "failed"]
+        if echo "$LOGS" | grep "failed";
         then
             docker-compose restart ckan
         fi

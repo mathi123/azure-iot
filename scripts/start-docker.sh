@@ -41,15 +41,16 @@ while true; do
             exit 0
         fi
 
-        echo -n "."
         if grep -Fq "sqlalchemy" CKANLOGS.log;
         then
+            echo "."
             echo "Restarting ckan container..."
             docker-compose restart ckan
             START=$(date +%Y-%m-%dT%H:%M:%S)
             echo -n "Running CKAN Check..."
-        else
-            docker logs --since "$START" ckan >& CKANLOGS.log
-            sleep 10
         fi
+        
+        docker logs --since "$START" ckan >& CKANLOGS.log
+        sleep 10
+        echo -n "."
 done

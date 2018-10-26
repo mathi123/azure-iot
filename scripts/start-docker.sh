@@ -30,7 +30,7 @@ docker-compose start ckan
 
 echo -n "Running CKAN Check..."
 
-docker logs -f --until 2m ckan >& CKANLOGS.log;
+docker logs -f --until 2m ckan 2>&1 | tee CKANLOGS.log;
 
 while true; do
         if grep -Fq "SUCCESS" CKANLOGS.log;
@@ -50,7 +50,7 @@ while true; do
             echo -n "Running CKAN Check..."
         fi
         
-        docker logs --since "$START" ckan >& CKANLOGS.log
+        docker logs --since "$START" ckan 2>&1 | tee CKANLOGS.log
         sleep 10
         echo -n "."
 done

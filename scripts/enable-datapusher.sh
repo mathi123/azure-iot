@@ -10,7 +10,7 @@ docker exec ckan /usr/local/bin/ckan-paster --plugin=ckan datastore set-permissi
 
 sudo sed -i 's/#ckan.datapusher.formats/ckan.datapusher.formats/g' /var/lib/docker/volumes/docker_ckan_config/_data/production.ini
 
-until docker exec -it postgresql psql -U 'ckan' -lqt | cut -d \| -f 1 | grep -qw ckan; do
+until docker exec -ti postgresql psql -U 'ckan' -lqt | cut -d \| -f 1 | grep -qw ckan; do
         >&2 echo "Postgres is unavailable - sleeping"
         sleep 3
 done

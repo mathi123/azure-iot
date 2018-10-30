@@ -10,9 +10,15 @@ docker exec ckan /usr/local/bin/ckan-paster --plugin=ckan datastore set-permissi
 
 sudo sed -i 's/#ckan.datapusher.formats/ckan.datapusher.formats/g' /var/lib/docker/volumes/docker_ckan_config/_data/production.ini
 
-until docker exec -ti postgresql psql -U 'ckan' -lqt | cut -d \| -f 1 | grep -qw ckan; do
+POSTGRESQLDBLIST="$(docker exec postgresql psql -U 'ckan' -lqt | cut -d \| -f 1)"
+
+echo "$POSTGRESQLDBLIST"
+
+until [[ "$POSTGRESQLDBLIST" =~ "ckan" ]]; do
         >&2 echo "Postgres is unavailable - sleeping"
         sleep 3
+        POSTGRESQLDBLIST="$(docker exec postgresql psql -U 'ckan' -lqt | cut -d \| -f 1)"
+        echo "$POSTGRESQLDBLIST"
 done
 
  >&2 echo "Postgres is up - setting up ckan and enabling datapusher"

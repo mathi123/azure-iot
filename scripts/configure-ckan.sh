@@ -5,7 +5,10 @@ organization="$1"
 echo "configuring CKAN"
 echo "Organisation: $organization"
 
-apiKey=$(docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan user -c /etc/ckan/production.ini add cityadmin email=test@localhost password=tM5cMP123 | grep apikey | sed "s/'/\n/g" | sed -n '4p')
+USERDATA="$(docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan user -c /etc/ckan/production.ini add cityadmin email=test@localhost password=tM5cMP123)"
+echo "$USERDATA"
+
+apiKey="$( echo "$USERDATA" | grep -o apikey | sed "s/'/\n/g" | sed -n '4p')"
 
 docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add cityadmin
 

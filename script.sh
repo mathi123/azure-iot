@@ -1,20 +1,18 @@
 #!/bin/bash
+echo "Give a name for the resourcegroup: "
+read rgname # resource group iotcity4
+dnsname=".westeurope.cloudapp.azure.com"
 
-repoUrl="$1"
-fqdn="$2"
-redis="$3"
-organization="$4"
+redis="localhost"
 
 echo "Installing azure city platform"
-echo "  - Repo: $repoUrl"
-echo "  - Host: $fqdn"
+echo "  - Host: $rgname$dnsname"
 echo "  - Redis: $redis"
-echo "  - Organization: $organization"
 
 rm -R -f azureiotcity
 
-git clone $repoUrl azureiotcity
+git clone https://github.com/mathi123/azure-iot azureiotcity
 
 cd azureiotcity
 
-./scripts/install.sh $fqdn $redis $organization
+./scripts/install.sh $rgname $rgname$dnsname $redis

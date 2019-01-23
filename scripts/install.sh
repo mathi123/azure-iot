@@ -1,18 +1,18 @@
 #!/bin/bash
-echo "CKAN Credentials: "
-echo "admin name: "
-read ckanuser
-echo "admin email: "
-read ckanemail
-echo "admin paassword: "
-read -s ckanpassword
-ckanport=":8096"
-
 rgname="$1"
 
 fqdn="$2"
 
 redis="$3"
+
+ckanuser="$4"
+
+ckanemail="$5"
+
+ckanpassword="$6"
+
+ckanport="$7"
+
 
 echo "Installing azure city platform" 
 echo "  - Host: $fqdn"

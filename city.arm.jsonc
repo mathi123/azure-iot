@@ -1,0 +1,220 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {
+        "adminUsername": "mathias",
+        "adminPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzW4qadFnkmbO5dOBnVf2SmTGDbOHev5+CUvSTxgwo9xY5mMlpyx360X2MyQfUk5aZdIRCZqgIQbGDCfjrPLUReVS+Bj7uCmuWjlC2lk3cP+HgVyRKNJgc4YRAT3W/pllqGnSI6SG6cXloSjqGPNWT18EfId6bLpZs/cMQ06V1yU0IhQxfwcJooO65TGyZ90KT/fnhpajRK3DjTJl6kJ/t0+jxGRjDyAFSW6e5TzaqdhmsnPSy81LaQwQxpArdiG27It9SuRRFcpkk4WaCxfhbMF1H5DHDyGZI5jZ4MoKJRFiDlwfKnyE+BcXYX+Qt8MM5aubGQwYL83LiiIMttdbr mathias@DESKTOP-KK9TUHM",
+        "networkInterfaceName": "city-store-ni",
+        "networkSecurityGroupName": "city-store-nsg",
+        "subnetName": "default",
+        "virtualNetworkName": "city-store-vnet",
+        "publicIpAddressName": "city-store-host-ip",
+        "publicIpAddressSku": "Basic",
+        "publicIpAddressType": "Dynamic",
+        "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+        "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
+        "location": "[resourceGroup().location]",
+        "virtualMachineName": "city-store-host-vm",
+        "osDiskType": "Premium_LRS",
+        "virtualMachineSize": "Standard_D2s_v3",
+        "addressPrefixes": [
+            "10.0.1.0/24"
+        ],
+        "subnets": [
+            {
+                "name": "default",
+                "properties": {
+                    "addressPrefix": "10.0.1.0/24"
+                }
+            }
+        ],
+        "networkSecurityGroupRules": [
+            {
+                "name": "SSH",
+                "properties": {
+                    "priority": 300,
+                    "protocol": "TCP",
+                    "access": "Allow",
+                    "direction": "Inbound",
+                    "sourceAddressPrefix": "*",
+                    "sourcePortRange": "*",
+                    "destinationAddressPrefix": "*",
+                    "destinationPortRange": "22"
+                }
+            }
+        ]
+    },
+    "resources": [
+        {
+            "name": "[variables('networkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-10-01",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[variables('nsgId')]"
+                }
+            },
+            "tags": {
+                "Responsible": "Mathias",
+                "Name": "dev-city-store"
+            }
+        },
+        {
+            "name": "[variables('networkSecurityGroupName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-02-01",
+            "location": "[variables('location')]",
+            "properties": {
+                "securityRules": "[variables('networkSecurityGroupRules')]"
+            },
+            "tags": {
+                "Responsible": "Mathias",
+                "Name": "dev-city-store"
+            }
+        },
+        {
+            "name": "[variables('virtualNetworkName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-02-01",
+            "location": "[variables('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": "[variables('addressPrefixes')]"
+                },
+                "subnets": "[variables('subnets')]"
+            },
+            "tags": {
+                "Responsible": "Mathias",
+                "Name": "dev-city-store"
+            }
+        },
+        {
+            "name": "[variables('publicIpAddressName')]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2019-02-01",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIpAllocationMethod": "[variables('publicIpAddressType')]"
+            },
+            "sku": {
+                "name": "[variables('publicIpAddressSku')]"
+            },
+            "tags": {
+                "Responsible": "Mathias",
+                "Name": "dev-city-store"
+            }
+        },
+        {
+            "name": "[variables('virtualMachineName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2018-10-01",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('virtualMachineSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('osDiskType')]"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "18.04-LTS",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[variables('virtualMachineName')]",
+                    "adminUsername": "[variables('adminUsername')]",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', variables('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[variables('adminPublicKey')]"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "tags": {
+                "Responsible": "Mathias",
+                "Name": "dev-city-store"
+            }
+        },
+        {
+            "name": "microsoft.custom-script-linux-20190607141810",
+            "apiVersion": "2015-01-01",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "https://gallery.azure.com/artifact/20161101/microsoft.custom-script-linux-arm.2.0.56/Artifacts/MainTemplate.json"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "dev-citys-store"
+                    },
+                    "location": {
+                        "value": "westus"
+                    },
+                    "fileUris": {
+                        "value": [
+                            "https://iaasv2tempstorageam.blob.core.windows.net/vmextensionstemporary-10037ffe99b09614-20190607121401525/city-store.sh?sv=2017-04-17&sr=c&sig=iCKCGR3BUK1D05ds94TTKfRZlS9euTRDq0IqB94vyaA%3D&se=2019-06-08T12%3A14%3A01Z&sp=rw"
+                        ]
+                    },
+                    "commandToExecute": {
+                        "value": "./city-store.sh"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "adminUsername": {
+            "type": "string",
+            "value": "[variables('adminUsername')]"
+        }
+    }
+}
